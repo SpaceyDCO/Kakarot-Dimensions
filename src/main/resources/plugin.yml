@@ -1,0 +1,15 @@
+name: Kakarot-Dimensions
+version: 1.0
+main: com.kakarot.Main
+author: SpaceyDCO
+
+description: A custom dimension system for players to own Hyperbolic Chambers.
+
+commands:
+  dimensions:
+    description: Main command for the plugin.
+    usage: /<command> [subcommand]
+    aliases: [chamber]
+
+depend: [WorldEdit, Kakarot]
+loadbefore: [WorldEdit, Kakarot]
