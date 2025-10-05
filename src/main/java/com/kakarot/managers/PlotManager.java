@@ -1,6 +1,7 @@
 package com.kakarot.managers;
 
 import com.kakarot.Main;
+import com.kakarot.data.Plot;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.bukkit.Location;
@@ -8,8 +9,10 @@ import org.bukkit.World;
 import org.bukkit.WorldCreator;
 import org.bukkit.WorldType;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.logging.Level;
 
 public class PlotManager {
     private final Main plugin;
@@ -19,11 +22,23 @@ public class PlotManager {
     public static final int PLOT_SIZE = 500;
     public static final int PLOT_SPACING = 500;
     public static final int GRID_CELL_SIZE = PLOT_SIZE + PLOT_SPACING;
-
-    private final Set<String> occupiedPlots = new HashSet<>(); //Change to database read later on
+    @Getter private final Map<UUID, Plot> playerPlotsCache = new HashMap<>();
+    private final Set<GridLocation> occupiedPlots = new HashSet<>();
 
     public PlotManager(Main plugin) {
         this.plugin = plugin;
+    }
+
+    public void loadAllOccupiedPlots() {
+        plugin.getLogger().info("Loading all occupied plots into cache...");
+        try {
+            Set<GridLocation> plots = plugin.getDataManager().loadOccupiedPlots().get();
+            this.occupiedPlots.addAll(plots);
+            plugin.getLogger().info("Successfully loaded " + plots.size() + " occupied plot(s) into cache.");
+        }catch(InterruptedException | ExecutionException e) {
+            plugin.getLogger().log(Level.SEVERE, "FATAL ERROR while trying to load all occupied plots. Disabling plugin for safety...", e);
+            plugin.getPluginLoader().disablePlugin(plugin); //Disable plugin
+        }
     }
 
     /**
@@ -81,12 +96,61 @@ public class PlotManager {
         return new Location(dimensionWorld, bukkitX, 32, bukkitZ);
     }
 
-    //Temporary methods (these will be replaced by database reading later on...)
-    public boolean isOccupied(GridLocation location) {
-        return this.occupiedPlots.contains(location.toString());
+    /**
+     * Adds a Plot to cache
+     * @param player The plot owner's UUID
+     * @param plot The plot to save
+     */
+    public void addPlotToCache(UUID player, Plot plot) {
+        this.playerPlotsCache.put(player, plot);
     }
+
+    /**
+     * Removes a Plot from cache
+     * @param uuid The UUID of the owner of the Plot that will be removed
+     */
+    public void removePlotFromCache(UUID uuid) {
+        this.playerPlotsCache.remove(uuid);
+    }
+
+    /**
+     * Retrieves a Plot registered under the given UUID
+     * @param ownerUUID The UUID of the plot's owner
+     * @return A CompletableFuture containing the Plot
+     */
+    public CompletableFuture<Plot> getPlot(UUID ownerUUID) {
+        if(this.playerPlotsCache.containsKey(ownerUUID)) {
+            return CompletableFuture.completedFuture(this.playerPlotsCache.get(ownerUUID));
+        }
+        return plugin.getDataManager().loadDimension(ownerUUID).thenApply(plot -> {
+            if(plot != null) {
+                addPlotToCache(ownerUUID, plot);
+            }
+            return plot;
+        });
+    }
+    public CompletableFuture<Void> registerNewPlot(Plot newPlot) {
+        addPlotToCache(newPlot.getOwner(), newPlot);
+        markAsOccupied(new GridLocation(newPlot.getGridX(), newPlot.getGridZ()));
+        plugin.getLogger().info("Marking grid location ("+ newPlot.getGridX() + "," + newPlot.getGridZ() +") as occupied.");
+        return plugin.getDataManager().saveDimension(newPlot.getOwner(), newPlot);
+    }
+
+    /**
+     * Checks whether a GridLocation is occupied or not
+     * @param location The GridLocation that will be checked
+     * @return true if occupied (a plot already exists in that grid), false otherwise
+     */
+    public boolean isOccupied(GridLocation location) {
+        return this.occupiedPlots.contains(location);
+    }
+
+    /**
+     * Marks the location as occupied
+     * @param location The GridLocation to be marked as occupied
+     */
     public void markAsOccupied(GridLocation location) {
-        occupiedPlots.add(location.toString());
+        occupiedPlots.add(location);
     }
 
     //Inner class for Grid coordinates
@@ -98,6 +162,17 @@ public class PlotManager {
         @Override
         public String toString() {
             return x + "," + z;
+        }
+        @Override
+        public boolean equals(Object o) {
+            if(this == o) return true;
+            if(o == null || getClass() != o.getClass())  return false;
+            GridLocation obj = (GridLocation) o;
+            return x == obj.x && z == obj.z;
+        }
+        @Override
+        public int hashCode() {
+            return 31 * x + z;
         }
     }
 }
