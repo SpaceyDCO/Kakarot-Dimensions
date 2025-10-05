@@ -1,0 +1,61 @@
+# --------------------------------------------------- #
+#       Kakarot Hyperbolic Chamber - Upgrades         #
+# --------------------------------------------------- #
+
+# This is a map where the key (e.g., 'unlock_training_room') is the unique ID for the upgrade.
+upgrades:
+  unlock_training_room:
+    name: "&aUnlock Training Room"
+    lore:
+      - "&7Unlocks the basic training room"
+      - "&7where you can fight enemies."
+      - ""
+      - "&eCost: &6{cost} Dimensional Fragments"
+    gui_item: "IRON_SWORD"
+    cost: 100
+    # No requirements for this module
+    actions:
+      remove_barriers:
+        # These would be the corners of the barrier wall, keep in mind this is relative to the plot origin.
+        # NOT IMPLEMENTED YET...
+        pos1: "10,64,-5"
+        pos2: "10,70,5"
+
+  unlock_senzu_garden:
+    name: "&aUnlock Senzu Garden"
+    lore:
+      - "&7A quiet place to cultivate and"
+      - "&7harvest magical Senzu Beans."
+      - ""
+      - "&eCost: &6{cost} Dimensional Fragments"
+      - "&cRequires: &7Unlock Training Room"
+    gui_item: "SAPLING"
+    cost: 250
+    requirements:
+      upgrades:
+        - "unlock_training_room"
+    actions:
+      remove_barriers:
+        pos1: "-10,64,-5"
+        pos2: "-10,70,5"
+
+  upgrade_training_dummy:
+    name: "&bAdvanced Training Room"
+    lore:
+      - "&7Improves the training room,"
+      - "&7allowing for more advanced"
+      - "&7combat simulations."
+      - ""
+      - "&eCost: &6{cost} Dimensional Fragments"
+      - "&cRequires: &7Unlock Training Room"
+    gui_item: "ARMOR_STAND"
+    cost: 500
+    requirements:
+      upgrades:
+        - "unlock_training_room"
+    actions:
+      # This upgrade might paste a small schematic instead of removing barriers
+      paste_schematic:
+        name: "advanced_dummy.schematic"
+        # Relative to the plot origin
+        offset: "15,65,0"
