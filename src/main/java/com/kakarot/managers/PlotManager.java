@@ -34,7 +34,7 @@ public class PlotManager {
         try {
             Set<GridLocation> plots = plugin.getDataManager().loadOccupiedPlots().get();
             this.occupiedPlots.addAll(plots);
-            plugin.getLogger().info("Successfully loaded all occupied plots into cache.");
+            plugin.getLogger().info("Successfully loaded " + plots.size() + " occupied plot(s) into cache.");
         }catch(InterruptedException | ExecutionException e) {
             plugin.getLogger().log(Level.SEVERE, "FATAL ERROR while trying to load all occupied plots. Disabling plugin for safety...", e);
             plugin.getPluginLoader().disablePlugin(plugin); //Disable plugin
@@ -132,6 +132,7 @@ public class PlotManager {
     public CompletableFuture<Void> registerNewPlot(Plot newPlot) {
         addPlotToCache(newPlot.getOwner(), newPlot);
         markAsOccupied(new GridLocation(newPlot.getGridX(), newPlot.getGridZ()));
+        plugin.getLogger().info("Marking grid location ("+ newPlot.getGridX() + "," + newPlot.getGridZ() +") as occupied.");
         return plugin.getDataManager().saveDimension(newPlot.getOwner(), newPlot);
     }
 
@@ -161,6 +162,17 @@ public class PlotManager {
         @Override
         public String toString() {
             return x + "," + z;
+        }
+        @Override
+        public boolean equals(Object o) {
+            if(this == o) return true;
+            if(o == null || getClass() != o.getClass())  return false;
+            GridLocation obj = (GridLocation) o;
+            return x == obj.x && z == obj.z;
+        }
+        @Override
+        public int hashCode() {
+            return 31 * x + z;
         }
     }
 }
