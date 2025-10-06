@@ -5,10 +5,7 @@ import com.kakarot.managers.PlotManager;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
@@ -16,6 +13,8 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class InMemoryDataManager implements DataManager {
     private final Map<UUID, Plot> playerPlots = new HashMap<>();
+    private final Map<UUID, Set<String>> playerUpgrades = new HashMap<>();
+    private final Map<UUID, Integer> playerFragments = new HashMap<>();
     @Override
     public void initialize() {
         //Nothing to do since this is RAM only
@@ -43,6 +42,28 @@ public class InMemoryDataManager implements DataManager {
     @Override
     public CompletableFuture<Void> saveDimension(UUID owner, Plot plot) {
         this.playerPlots.put(owner, plot);
+        return CompletableFuture.completedFuture(null);
+    }
+
+    @Override
+    public CompletableFuture<Set<String>> loadPlayerUpgrades(UUID uuid) {
+        return CompletableFuture.completedFuture(this.playerUpgrades.getOrDefault(uuid, new HashSet<>()));
+    }
+
+    @Override
+    public CompletableFuture<Void> addPlayerUpgrade(UUID uuid, String upgradeID) {
+        this.playerUpgrades.computeIfAbsent(uuid, k -> new HashSet<>()).add(upgradeID);
+        return CompletableFuture.completedFuture(null);
+    }
+
+    @Override
+    public CompletableFuture<Integer> getPlayerFragments(UUID uuid) {
+        return CompletableFuture.completedFuture(this.playerFragments.getOrDefault(uuid, 0));
+    }
+
+    @Override
+    public CompletableFuture<Void> setPlayerFragments(UUID uuid, int amount) {
+        this.playerFragments.put(uuid, amount);
         return CompletableFuture.completedFuture(null);
     }
 }
