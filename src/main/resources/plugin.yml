@@ -6,10 +6,15 @@ author: SpaceyDCO
 description: A custom dimension system for players to own Hyperbolic Chambers.
 
 commands:
-  dimensions:
+  chamber:
     description: Main command for the plugin.
     usage: /<command> [subcommand]
-    aliases: [chamber]
+    aliases: [chambers]
+  fragments:
+    description: Admin command to manage player dimensional fragments
+    usage: /<command> <give|set|take> <player> <amount>
+    aliases: [dimfragments, kakarotfragments]
+    # permission: kakarot.admin.fragments ADD LATER
 
 depend: [WorldEdit, Kakarot]
 loadbefore: [WorldEdit, Kakarot]
