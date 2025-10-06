@@ -6,6 +6,7 @@ import com.kakarot.database.InMemoryDataManager;
 import com.kakarot.listeners.PlayerConnectionListener;
 import com.kakarot.managers.MessageManager;
 import com.kakarot.managers.PlotManager;
+import com.kakarot.managers.UpgradeManager;
 import lombok.Getter;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -16,6 +17,7 @@ public class Main extends JavaPlugin {
     @Getter private PlotManager plotManager;
     @Getter private DataManager dataManager;
     @Getter private MessageManager messageManager;
+    @Getter private UpgradeManager upgradeManager;
     private PlayerConnectionListener playerConnectionListener;
 
     @Override
@@ -27,6 +29,8 @@ public class Main extends JavaPlugin {
         this.plotManager = new PlotManager(this);
         this.plotManager.loadDimensionWorld();
         this.plotManager.loadAllOccupiedPlots();
+        this.upgradeManager = new UpgradeManager(this);
+        this.upgradeManager.loadUpgrades();
         this.playerConnectionListener = new PlayerConnectionListener(this);
         getServer().getPluginManager().registerEvents(this.playerConnectionListener, this);
         getCommand("chamber").setExecutor(new PlotCommands(this, this.plotManager, this.messageManager));
