@@ -8,11 +8,14 @@ import com.kakarot.listeners.PlayerConnectionListener;
 import com.kakarot.managers.MessageManager;
 import com.kakarot.managers.PlotManager;
 import com.kakarot.managers.UpgradeManager;
+import com.kakarot.services.ActionService;
 import com.kakarot.services.UpgradeService;
 import lombok.Getter;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import java.io.File;
 
 public class Main extends JavaPlugin {
     @Getter private static Main instance;
@@ -21,6 +24,7 @@ public class Main extends JavaPlugin {
     @Getter private MessageManager messageManager;
     @Getter private UpgradeManager upgradeManager;
     @Getter private UpgradeService upgradeService;
+    @Getter private ActionService actionService;
     private PlayerConnectionListener playerConnectionListener;
 
     @Override
@@ -35,7 +39,13 @@ public class Main extends JavaPlugin {
         this.upgradeManager = new UpgradeManager(this);
         this.upgradeManager.loadUpgrades();
         this.upgradeService = new UpgradeService(this);
+        this.actionService = new ActionService(this);
         this.playerConnectionListener = new PlayerConnectionListener(this);
+        File defaultSchematicFile = new File(getDataFolder(), "schematics/max_chamber.schematic");
+        if(!defaultSchematicFile.exists()) {
+            getLogger().info("Default chamber schematic not found, loading it now...");
+            saveResource("schematics/max_chamber.schematic", false);
+        }
         getServer().getPluginManager().registerEvents(this.playerConnectionListener, this);
         getCommand("chamber").setExecutor(new PlotCommands(this, this.plotManager, this.messageManager));
         getCommand("fragments").setExecutor(new FragmentsCommand(this));
