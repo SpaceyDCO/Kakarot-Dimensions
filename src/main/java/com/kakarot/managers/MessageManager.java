@@ -29,6 +29,7 @@ public class MessageManager {
         messages.put("create.locating", "&aFinding an empty spot for your chamber...");
         messages.put("create.error", "&cError: Could not find a space. Please contact an admin.");
         messages.put("create.success", "&6Your chamber has been created! Teleporting you now...");
+        messages.put("create.no-schematic", "&cError: Initial schematic file was not found");
         messages.put("home.no-chamber", "&cYou don't have a chamber yet! Use /chamber create.");
         messages.put("home.teleporting", "&aTeleporting you to your chamber...");
         // Dimensional Fragments Admin Command
