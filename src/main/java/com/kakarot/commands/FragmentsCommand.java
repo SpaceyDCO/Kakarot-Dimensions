@@ -43,7 +43,7 @@ public class FragmentsCommand implements CommandExecutor {
         }
         OfflinePlayer target = Bukkit.getOfflinePlayer(playerName);
         if(!target.hasPlayedBefore() && !target.isOnline()) {
-            messageManager.sendMessage(player, "fragments.player-not-found");
+            messageManager.sendMessage(player, "fragments.player-not-found", "{player}", target.getName());
             return true;
         }
         //Optimize to cache
@@ -63,10 +63,10 @@ public class FragmentsCommand implements CommandExecutor {
                    messageManager.sendMessage(player, "fragments.incorrect-syntax");
                    return;
            }
-           plugin.getDataManager().setPlayerFragments(player.getUniqueId(), newBalance);
-           messageManager.sendMessage(player, "fragments.successful-operation");
+           plugin.getDataManager().setPlayerFragments(target.getUniqueId(), newBalance);
+           messageManager.sendMessage(player, "fragments.successful-operation", "{player}", target.getName(), "{balance}", String.valueOf(fragments));
            if(target.isOnline()) {
-               messageManager.sendMessage(target.getPlayer(), "fragments.fragments-changed");
+               messageManager.sendMessage(target.getPlayer(), "fragments.fragments-changed", "{balance}", String.valueOf(fragments));
            }
         });
         return true;

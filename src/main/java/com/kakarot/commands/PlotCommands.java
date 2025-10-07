@@ -29,6 +29,7 @@ public class PlotCommands implements CommandExecutor {
             messageManager.sendMessage(commandSender, "help.header");
             messageManager.sendMessage(commandSender, "help.create");
             messageManager.sendMessage(commandSender, "help.home");
+            messageManager.sendMessage(commandSender, "help.upgrades");
             return true;
         }
         String subcommand = strings[0].toLowerCase();
