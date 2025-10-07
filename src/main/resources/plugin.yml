@@ -16,5 +16,5 @@ commands:
     aliases: [dimfragments, kakarotfragments]
     # permission: kakarot.admin.fragments ADD LATER
 
-depend: [WorldEdit, Kakarot]
+depend: [WorldEdit, Kakarot, SmartInvs]
 loadbefore: [WorldEdit, Kakarot]
