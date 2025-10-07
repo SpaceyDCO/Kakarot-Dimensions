@@ -64,9 +64,9 @@ public class FragmentsCommand implements CommandExecutor {
                    return;
            }
            plugin.getDataManager().setPlayerFragments(target.getUniqueId(), newBalance);
-           messageManager.sendMessage(player, "fragments.successful-operation", "{player}", target.getName(), "{balance}", String.valueOf(fragments));
+           messageManager.sendMessage(player, "fragments.successful-operation", "{player}", target.getName(), "{balance}", String.valueOf(newBalance));
            if(target.isOnline()) {
-               messageManager.sendMessage(target.getPlayer(), "fragments.fragments-changed", "{balance}", String.valueOf(fragments));
+               messageManager.sendMessage(target.getPlayer(), "fragments.fragments-changed", "{balance}", String.valueOf(newBalance));
            }
         });
         return true;
