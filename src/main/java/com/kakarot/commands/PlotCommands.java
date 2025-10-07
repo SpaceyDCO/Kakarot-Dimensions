@@ -2,6 +2,7 @@ package com.kakarot.commands;
 
 import com.kakarot.Main;
 import com.kakarot.data.Plot;
+import com.kakarot.gui.UpgradeGUIProvider;
 import com.kakarot.managers.MessageManager;
 import com.kakarot.managers.PlotManager;
 import lombok.AllArgsConstructor;
@@ -37,6 +38,9 @@ public class PlotCommands implements CommandExecutor {
                 break;
             case "home":
                 handleHome(player);
+                break;
+            case "upgrades":
+                UpgradeGUIProvider.INVENTORY.open(player);
                 break;
             default:
                 messageManager.sendMessage(commandSender, "error.unknown-command");
