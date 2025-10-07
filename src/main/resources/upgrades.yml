@@ -2,7 +2,7 @@
 #       Kakarot Hyperbolic Chamber - Upgrades         #
 # --------------------------------------------------- #
 
-# This is a map where the key (e.g., 'unlock_training_room') is the unique ID for the upgrade.
+# This is a map where the key (for example, 'unlock_training_room') is the unique ID for the upgrade.
 upgrades:
   unlock_training_room:
     name: "&aUnlock Training Room"
@@ -13,13 +13,12 @@ upgrades:
       - "&eCost: &6{cost} Dimensional Fragments"
     gui_item: "IRON_SWORD"
     cost: 100
-    # No requirements for this module
+    # No requirements for this module because this is the first module
     actions:
       remove_barriers:
-        # These would be the corners of the barrier wall, keep in mind this is relative to the plot origin.
-        # NOT IMPLEMENTED YET...
-        pos1: "10,64,-5"
-        pos2: "10,70,5"
+        # Corners of the barrier wall, these are relative to the chamber's origin point
+        pos1: "10,0,3"
+        pos2: "10,3,-3"
 
   unlock_senzu_garden:
     name: "&aUnlock Senzu Garden"
@@ -54,8 +53,7 @@ upgrades:
       upgrades:
         - "unlock_training_room"
     actions:
-      # This upgrade might paste a small schematic instead of removing barriers
       paste_schematic:
         name: "advanced_dummy.schematic"
-        # Relative to the plot origin
+        # This is relative to the chamber's origin
         offset: "15,65,0"
