@@ -42,21 +42,21 @@ public class UpgradeGUIProvider implements InventoryProvider {
             plugin.getUpgradeManager().getUpgrade("unlock_training_room").ifPresent(upgrade -> {
                 ItemStack icon = createIcon(upgrade, unlockedUpgrades, fragments);
                 inventoryContents.set(1, 1, ClickableItem.of(icon, e -> {
-                    handlePurchase(player, upgrade.getId(), inventoryContents);
+                    handlePurchase(player, upgrade.getId());
                 }));
             });
             //Senzu garden
             plugin.getUpgradeManager().getUpgrade("unlock_senzu_garden").ifPresent(upgrade -> {
                 ItemStack icon = createIcon(upgrade, unlockedUpgrades, fragments);
                 inventoryContents.set(1, 4, ClickableItem.of(icon, e -> {
-                    handlePurchase(player, upgrade.getId(), inventoryContents);
+                    handlePurchase(player, upgrade.getId());
                 }));
             });
             //Training room upgrade
             plugin.getUpgradeManager().getUpgrade("upgrade_training_dummy").ifPresent(upgrade -> {
                 ItemStack icon = createIcon(upgrade, unlockedUpgrades, fragments);
                 inventoryContents.set(1, 7, ClickableItem.of(icon, e -> {
-                    handlePurchase(player, upgrade.getId(), inventoryContents);
+                    handlePurchase(player, upgrade.getId());
                 }));
             });
         });
@@ -66,13 +66,16 @@ public class UpgradeGUIProvider implements InventoryProvider {
     public void update(Player player, InventoryContents inventoryContents) {
     }
 
-    private void handlePurchase(Player player, String upgradeID, InventoryContents contents) {
+    private void handlePurchase(Player player, String upgradeID) {
         messageManager.sendMessage(player, "gui.purchase-attempt");
         plugin.getUpgradeService().purchaseUpgrade(player, upgradeID).thenAccept(purchaseResult -> {
            switch(purchaseResult) {
                case SUCCESS:
                    messageManager.sendMessage(player, "gui.purchase-successful");
                    INVENTORY.close(player);
+                   plugin.getUpgradeManager().getUpgrade(upgradeID).ifPresent(upgrade -> {
+                       plugin.getActionService().executeAction(player, upgrade);
+                   });
                    break;
                case ALREADY_OWNED:
                    messageManager.sendMessage(player, "gui.purchase-already-owned");
