@@ -5,6 +5,7 @@ import com.kakarot.data.Plot;
 import com.kakarot.gui.UpgradeGUIProvider;
 import com.kakarot.managers.MessageManager;
 import com.kakarot.managers.PlotManager;
+import com.kakarot.util.WorldEditUtils;
 import lombok.AllArgsConstructor;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -12,6 +13,8 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+
+import java.io.File;
 
 @AllArgsConstructor
 public class PlotCommands implements CommandExecutor {
@@ -62,9 +65,16 @@ public class PlotCommands implements CommandExecutor {
                 return;
             }
             Plot newPlot = new Plot(player.getUniqueId(), gridLocation.getX(), gridLocation.getZ());
-            this.plotManager.registerNewPlot(newPlot).thenRunAsync(() -> {
-                messageManager.sendMessage(player, "create.success");
+            this.plotManager.registerNewPlot(newPlot).thenRunAsync(() -> { //Maybe add a wait time for the schematic to paste
+                File schematicFile = new File(plugin.getDataFolder(), "schematics/max_chamber.schematic");
+                if(!schematicFile.exists()) {
+                    messageManager.sendMessage(player, "create.no-schematic");
+                    return;
+                }
                 Location destination = plotManager.gridToBukkitLocation(gridLocation.getX(), gridLocation.getZ());
+                Location pasteLocation = destination.clone(); //Just in case I need to change manually later
+                WorldEditUtils.pasteSchematic(schematicFile, pasteLocation);
+                messageManager.sendMessage(player, "create.success");
                 player.teleport(destination);
             }, runnable -> Bukkit.getScheduler().runTask(plugin, runnable));
         });
