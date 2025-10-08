@@ -35,7 +35,7 @@ public class WorldEditUtils {
             Main.getInstance().getLogger().log(Level.SEVERE, "An error occurred during a WorldEdit operation.", e);
         }
     }
-    public static void pasteSchematic(File schematicFile, Location location) {
+    public static void pasteSchematic(File schematicFile, Location location, boolean noAir) {
         if(!schematicFile.exists()) {
             Main.getInstance().getLogger().severe("Schematic file not found: " + schematicFile.getPath());
             return;
@@ -49,7 +49,7 @@ public class WorldEditUtils {
                 return;
             }
             EditSession editSession = WorldEdit.getInstance().getEditSessionFactory().getEditSession(worldEditWorld, -1);
-            format.load(schematicFile).paste(editSession, pasteLocation, false);
+            format.load(schematicFile).paste(editSession, pasteLocation, noAir);
             editSession.flushQueue();
         }catch(Exception e) {
             Main.getInstance().getLogger().log(Level.SEVERE, "An error occurred during schematic pasting.", e);
