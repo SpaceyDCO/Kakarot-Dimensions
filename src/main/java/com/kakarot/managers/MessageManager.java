@@ -9,7 +9,7 @@ import java.util.Map;
 public class MessageManager {
     //Temporal
     private final Map<String, String> messages = new HashMap<>();
-    private final String prefix = "&6[Chambers] &r";
+    private static final String PREFIX = "&6[Chambers] &r";
     public MessageManager() {
         loadMessages();
     }
@@ -64,7 +64,7 @@ public class MessageManager {
                 }
             }
         }
-        sender.sendMessage(format(prefix + message));
+        sender.sendMessage(format(PREFIX + message));
     }
 
     /**
