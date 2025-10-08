@@ -74,7 +74,7 @@ public class UpgradeGUIProvider implements InventoryProvider {
                    messageManager.sendMessage(player, "gui.purchase-successful");
                    INVENTORY.close(player);
                    plugin.getUpgradeManager().getUpgrade(upgradeID).ifPresent(upgrade -> {
-                       plugin.getActionService().executeAction(player, upgrade);
+                       plugin.getActionService().executeActions(player, upgrade);
                    });
                    break;
                case ALREADY_OWNED:
@@ -88,6 +88,9 @@ public class UpgradeGUIProvider implements InventoryProvider {
                    break;
                case INVALID_UPGRADE:
                    messageManager.sendMessage(player, "gui.purchase-invalid-upgrade");
+                   break;
+               case ACTION_INVALID:
+                   messageManager.sendMessage(player, "gui.purchase-action-invalid");
                    break;
            }
         });

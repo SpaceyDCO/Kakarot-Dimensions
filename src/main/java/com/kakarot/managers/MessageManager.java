@@ -46,6 +46,7 @@ public class MessageManager {
         messages.put("gui.purchase-insufficient-funds", "&cYou do not have enough Dimensional Fragments for this.");
         messages.put("gui.purchase-requirements-not-met", "&cYou do not meet the requirements for this upgrade.");
         messages.put("gui.purchase-invalid-upgrade", "&cAn error occurred: The selected upgrade is invalid.");
+        messages.put("gui.purchase-action-invalid", "&cAn error occurred: The selected upgrade contains invalid actions. Please contact an admin.");
     }
 
     /**
