@@ -73,7 +73,7 @@ public class PlotCommands implements CommandExecutor {
                 }
                 Location destination = plotManager.gridToBukkitLocation(gridLocation.getX(), gridLocation.getZ());
                 Location pasteLocation = destination.clone(); //Just in case I need to change manually later
-                WorldEditUtils.pasteSchematic(schematicFile, pasteLocation);
+                WorldEditUtils.pasteSchematic(schematicFile, pasteLocation, true);
                 messageManager.sendMessage(player, "create.success");
                 player.teleport(destination);
             }, runnable -> Bukkit.getScheduler().runTask(plugin, runnable));
