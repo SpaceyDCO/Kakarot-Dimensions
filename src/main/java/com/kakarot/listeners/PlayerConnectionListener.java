@@ -16,6 +16,7 @@ public class PlayerConnectionListener implements Listener {
         Player player = event.getPlayer();
         plugin.getPlotManager().getPlot(player.getUniqueId()).thenAccept(plot -> {
             if(plot != null) {
+                plugin.getPlotManager().addPlotToCache(player.getUniqueId(), plot);
                 plugin.getLogger().info("Loaded chamber data for player " + player.getName());
             }
         });
